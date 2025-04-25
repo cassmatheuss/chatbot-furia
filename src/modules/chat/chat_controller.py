@@ -5,7 +5,7 @@ from modules.chat.chat_usecase import ChatUseCase
 
 chat_bp = Blueprint('chat', __name__)
 
-@chat_bp.route('/', methods=['GET'])
+@chat_bp.route('/', methods=['POST'])
 def chat():
     repository = ChatRepository()
     usecase = ChatUseCase(repository)
