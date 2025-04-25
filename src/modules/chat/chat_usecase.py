@@ -1,6 +1,5 @@
-from modules.chat.chat_repository import ChatRepository
-from modules.chat.chat_viewmodel import ChatViewModel
-
+from src.modules.chat.chat_repository import ChatRepository
+from src.modules.chat.chat_viewmodel import ChatViewModel
 
 class ChatUseCase:
     def __init__(self, repo: ChatRepository):
