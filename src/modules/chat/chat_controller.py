@@ -1,6 +1,6 @@
 from flask import Blueprint
-from modules.chat.chat_repository import ChatRepository
-from modules.chat.chat_usecase import ChatUseCase
+from src.modules.chat.chat_repository import ChatRepository
+from src.modules.chat.chat_usecase import ChatUseCase
 
 
 chat_bp = Blueprint('chat', __name__)
