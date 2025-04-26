@@ -1,12 +1,10 @@
-from datetime import datetime
 from dotenv import load_dotenv
 import os
 from langchain.schema import SystemMessage, HumanMessage, AIMessage
 from langchain_openai import ChatOpenAI
 import requests
-import pytz
 
-load_dotenv()
+from shared.utils.to_brasilia import to_brasilia
 
 class ChatRepository:
     def __init__(self):
@@ -24,16 +22,6 @@ class ChatRepository:
             openai_api_key=self.openrouter_api_key,
             openai_api_base=self.openrouter_url
         )
-
-    
-    def _to_brasilia(self, iso_utc_str):
-        utc_dt = datetime.strptime(iso_utc_str, '%Y-%m-%dT%H:%M:%SZ')
-        utc_dt = utc_dt.replace(tzinfo=pytz.UTC)
-        brasilia_tz = pytz.timezone('America/Sao_Paulo')
-        brasilia_dt = utc_dt.astimezone(brasilia_tz)
-        
-        data_hora = brasilia_dt.strftime('%d/%m/%Y %H:%M:%S')
-        return f"{data_hora} Horário de Brasília"
 
     def _get_last_matches(self):
         url = 'https://api.pandascore.co/matches/past'
@@ -58,8 +46,8 @@ class ChatRepository:
                 f"Times: {match['opponents'][0]['opponent']['name']} x {match['opponents'][1]['opponent']['name']}\n"
                 f"Vencedor: {match['winner']['name'] if match['winner'] else 'Indefinido'}\n"
                 f"Campeonato: {match['serie']['full_name']}\n"
-                f"Início: {self._to_brasilia(match['begin_at'])}\n"
-                f"Fim: {self._to_brasilia(match['end_at'])}\n"
+                f"Início: {to_brasilia(match['begin_at'])}\n"
+                f"Fim: {to_brasilia(match['end_at'])}\n"
                 "======================================================\n\n"
             )
             
