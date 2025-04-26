@@ -5,3 +5,4 @@ class ChatViewModel(BaseModel):
     type: ChatType
     message: str
     created_at: str
+    session_id: str

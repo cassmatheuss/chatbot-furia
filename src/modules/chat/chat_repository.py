@@ -185,20 +185,28 @@ class ChatRepository:
             return "chat"
         return intent
 
-    def chat(self, question: str) -> str:
+    def chat(self, question: str, history: list = []) -> str:
         intent = self.detect_intent(question)
         context = ""
         if intent in self.context_functions:
             context = self.context_functions[intent]["function"]()
-        history = [
-            HumanMessage(content="meu nome é matheus."),
-            AIMessage(content="Entendido, vou te chamar de Matheus a partir de agora.")
-        ]
+
+        formatted_history = []
+        for msg in history:
+            if msg['type'] == "AI":
+                formatted_history.append(AIMessage(content=msg['message']))
+            else:
+                formatted_history.append(HumanMessage(content=msg['message']))
+
         base_prompt = SystemMessage(content=f"""
-            Você é o FURIOSO, o chatbot oficial e carismático da FURIA Esports, especializado no time de CS2. Sua missão é conversar com os fãs como se estivesse no meio da torcida, com empolgação, bom humor e paixão pelo time. Use gírias de gamer e expressões de torcida quando fizer sentido (como "VAMO FURIA!", "QUEBRA TUDO!", "HLTV neles", etc).
+            Você é o FURIOSO, o chatbot oficial e carismático da FURIA Esports, especializado no time de CS2.
+            Caso o usuario te pergunte, diga que foi feito pelo Matheus Castilho!
+            Redes sociais e links uteis:
+            -Site: https://www.furia.gg/
+            -Instagram: @furiagg
             Se houver contexto extra, utilize as informações abaixo para responder:
             {context}
         """)
-        messages = [base_prompt] + history + [HumanMessage(content=question)]
+        messages = [base_prompt] + formatted_history + [HumanMessage(content=question)]
         response = self.llm.invoke(messages)
         return response.content
