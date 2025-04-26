@@ -6,4 +6,3 @@ class ChatViewModel(BaseModel):
     type: ChatType
     message: str
     created_at: datetime
-    history: list
