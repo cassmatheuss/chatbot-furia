@@ -1,8 +1,10 @@
 from datetime import datetime
+import os
 import pytz
 from src.shared.entities.Chat import Chat
 from src.modules.chat.chat_repository import ChatRepository
 from src.modules.chat.chat_viewmodel import ChatViewModel
+from src.shared.utils.mongo_connect import connect_mongodb
 
 class ChatUseCase:
     def __init__(self, repo: ChatRepository):
@@ -10,7 +12,9 @@ class ChatUseCase:
 
     def __call__(self, data: dict):
         try:
-
+            db = connect_mongodb(url=os.getenv("MONGO_DB_URL"),db_name=os.getenv("DB_NAME"))
+            messages = list(db['messages'].find({}))
+            sessions = list(db['sessions'].find({}))
             human_message = Chat(
                 type="HUMAN",
                 message=data.get("message", "Olá"),
