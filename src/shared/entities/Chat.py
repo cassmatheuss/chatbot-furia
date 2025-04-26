@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from shared.enums.chat_type import ChatType
+from src.shared.enums.chat_type import ChatType
 
 class Chat(BaseModel):
     type: ChatType
