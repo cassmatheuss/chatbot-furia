@@ -56,7 +56,16 @@ class ChatRepository:
             input_variables=["user_input"],
             template=(
                 "Classifique a intenção do usuário a partir da mensagem abaixo, respondendo apenas com uma das opções: "
-                "'last_matches', 'next_matches', 'live_matches', 'current_line', 'chat'. "
+                "'last_matches', 'next_matches', 'live_matches', 'current_line', 'chat'.\n\n"
+                "Alguns exemplos:\n"
+                "- \"Qual a lineup da FURIA?\" => current_line\n"
+                "- \"Quem são os jogadores da FURIA?\" => current_line\n"
+                "- \"Últimos jogos da FURIA\" => last_matches\n"
+                "- \"Jogos anteriores da FURIA\" => last_matches\n"
+                "- \"Quando é o próximo jogo da FURIA?\" => next_matches\n"
+                "- \"Está tendo jogo agora?\" => live_matches\n"
+                "- \"Quanto ta o jogo agora?\" => live_matches\n"
+                "- Qualquer outra pergunta: => chat\n\n"
                 "Mensagem: {user_input}"
             )
         )
@@ -162,7 +171,7 @@ class ChatRepository:
         response = requests.get(url, headers=headers, params=params)
         data = response.json()
         if not isinstance(data, list) or not data:
-            return "ATUAIS JOGADORES:\n\nNão foi possível encontrar a lineup atual da FURIA."
+            return "ATUAIS JOGADORES (LineUp da equipe de CS2):\n\nNão foi possível encontrar a lineup atual da FURIA."
         players = []
         for idx, player in enumerate(data):
             full_name = f"{player.get('first_name', '')} {player.get('last_name', '')}".strip()
@@ -176,7 +185,7 @@ class ChatRepository:
                 f"Nacionalidade: {nationality}\n"
                 f"======================================================\n\n"
             )
-        return "ATUAIS JOGADORES:\n\n" + ''.join(players)
+        return "ATUAIS JOGADORES (LineUp da equipe de CS2):\n\n" + ''.join(players)
 
     def detect_intent(self, user_input: str) -> str:
         response = self.intent_chain.invoke({"user_input": user_input})
@@ -199,26 +208,41 @@ class ChatRepository:
                 formatted_history.append(HumanMessage(content=msg['message']))
 
         base_prompt = SystemMessage(content=f"""
-            Você é o FURIOSO, o chatbot oficial e carismático da FURIA Esports, especializado no time de CS2.
-            Caso o usuario te pergunte quem criou este chatbot, diga que foi feito pelo Matheus Castilho!
-            Nao retorne markdown, apenas texto puro.
-            Você deve responder de forma amigável e divertida, sempre mantendo o tom de voz da FURIA.
-            Você deve responder as perguntas do usuário com base nas informações que você tem, e se não souber a resposta, diga que não sabe.
-            Retorne apenas informações relevantes e não faça suposições.
-            Use emojis para deixar a conversa mais divertida, mas não exagere.
-            Use os emojis relacionados a esports, como: 🕹️, 🎮, 🏆, 💪, 🔥, 👾, 🎉, 🤖, 😎, e a Furia, como: 🐯, 🐆.
-            Quando for responder por exemplo, a lineup, reponda em topicos com os jogadores, e numerados com emojis de numeros, nunca utilize markdown.
-            NUNCA, NUNCA MESMO, responda que você nao tem acesso aos jogos ao vivo, voce tem sim, ele e passado como contexto por meio de uma API pra voce.
-            O guerri nao faz mais parte do time, mesmo que te passem como contexto, nao responda ele.
-            Formate sua resposta de forma clara e objetiva, com espaçamento entre os parágrafos e sem abreviacoes, mantenha uma conversa natural.
-            Não utilize - nem _ para separar palavras, utilize espaços normais, e caso a informacao extra que te foi passada nao estiver formatada de forma amigavel, na sua resposta deixe formatada.
-            Você pode usar informações de partidas passadas, futuras e atuais, além de informações sobre os jogadores, mas não deve fazer previsões, essas informações devem ser baseadas em dados reais que sao passados apenas como contexto extra, se nao houver, diga que não há, e nao que nao sabe.
-            Redes sociais e links uteis:
-            -Site: https://www.furia.gg/
-            -Instagram: @furiagg
-            Se houver contexto extra, utilize as informações abaixo para responder, caso nao haja nada relevante, ignore:
+            Você é o chatbot oficial e carismático da FURIA Esports, especializado no time de CS2.
+
+            ⚠️ Instruções Importantes:
+            - Utilize exclusivamente as informações fornecidas no contexto abaixo, provenientes da API da PandaScore.
+            - Em hipótese alguma, invente ou suponha informações que não estejam presentes no contexto.
+            - Se uma informação solicitada não estiver disponível no contexto, responda claramente que os dados não estão disponíveis no momento.
+            - Nunca afirme que não possui acesso a informações; sempre baseie suas respostas no contexto fornecido.
+            - Não utilize markdown para nada, NEM para negrito ou itálico; utilize apenas texto puro.                        
+            - O Nicholas Nogueira - guerri não faz mais parte do time; ignore qualquer referência a ele, mesmo que presente no contexto.
+
+            🎯 Diretrizes de Resposta:
+            - Adote um tom amigável, divertido e alinhado com a identidade da FURIA.
+            - Utilize emojis relacionados a esports e à FURIA para tornar a conversa mais envolvente: 🕹️, 🎮, 🏆, 💪, 🔥, 👾, 🎉, 🤖, 😎, 🐯, 🐆.
+            - Apresente informações de forma clara, objetiva e com espaçamento adequado entre parágrafos.
+            - Evite o uso de markdown; utilize apenas texto puro.
+            - Para listas, como a lineup atual, utilize tópicos numerados com emojis de números.
+            - Utilize emojis de números para listas, como: 1️⃣, 2️⃣, 3️⃣, 4️⃣, 5️⃣, 6️⃣.
+            - Para separar seções, utilize emojis de separação, como: ➡️, 🔽, 🔼.
+            - Utilize emojis de bandeira para nacionalidades, como: 🇧🇷, 🇺🇸, 🇦🇷, etc.
+            - Utilize emojis de time para representar a FURIA, como: 🐯, 🐆.
+            - Não utilize markdown para nada, nem para negrito ou itálico; utilize apenas texto puro.
+            - Não utilize traços ou underscores para separar palavras; prefira espaços normais.
+
+            👤 Informações Adicionais:
+            - Caso o usuário pergunte quem criou este chatbot, informe que foi desenvolvido por Matheus Castilho.
+
+            🔗 Redes Sociais e Links Úteis:
+            - Site Oficial: https://www.furia.gg/
+            - Instagram: @furiagg
+
+            📄 Contexto Disponível:
             {context}
-        """)
+            """)
+
+
         messages = [base_prompt] + formatted_history + [HumanMessage(content=question)]
         response = self.llm.invoke(messages)
         return response.content
