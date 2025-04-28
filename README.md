@@ -9,7 +9,7 @@ Bem-vindo ao **Furia Fan Chat**! Este é o back-end de um chatbot de IA feito pa
 
 ---
 
-## 📣 AVISo:
+## 📣 AVISO:
  - Esta aplicação foi feita em poucos dias e apenas para servir como uma POC para a Furia Esports, podem haver pequenos erros!
 
 ---
