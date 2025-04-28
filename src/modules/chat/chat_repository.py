@@ -101,6 +101,7 @@ class ChatRepository:
             start_time = to_brasilia(match.get('begin_at'))
             end_time = to_brasilia(match.get('end_at'))
             championship = format_championship_name(match)
+            score = f"{match['results'][0]['score'] if match.get('results') else "Indefinido"}  x {match['results'][1]['score']}" if match.get('results') else "Indefinido"
             matches.append(
                 f"======================================================\n"
                 f"Partida {idx}\n\n"
@@ -109,6 +110,7 @@ class ChatRepository:
                 f"Campeonato: {championship}\n"
                 f"Início: {start_time}\n"
                 f"Fim: {end_time}\n"
+                f"Placar: {score}\n"
                 f"======================================================\n\n"
             )
         return (
