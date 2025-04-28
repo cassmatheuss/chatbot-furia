@@ -7,6 +7,12 @@ Bem-vindo ao **Furia Fan Chat**! Este é o back-end de um chatbot de IA feito pa
 ## ✨ Acesso a aplicação hospedada:
  - https://furia.cassmatheus.site
 
+---
+
+## 📣 AVISo:
+ - Esta aplicação foi feita em poucos dias e apenas para servir como uma POC para a Furia Esports, podem haver pequenos erros!
+
+---
 ## ✨ Visão Geral
 
 O **Furia Fan Chat** é um servidor Flask que:
