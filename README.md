@@ -4,6 +4,10 @@ Bem-vindo ao **Furia Fan Chat**! Este é o back-end de um chatbot de IA feito pa
 
 ---
 
+![chatbot](https://github.com/user-attachments/assets/3bd59312-a522-43f6-9cf5-072d8bbc952c)
+
+---
+
 ## ✨ Acesso a aplicação hospedada:
  - https://furia.cassmatheus.site
 
